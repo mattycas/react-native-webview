@@ -8,6 +8,7 @@
 #import "RNCWKWebView.h"
 #import <React/RCTConvert.h>
 #import <React/RCTAutoInsetsProtocol.h>
+#import "RNCWKProcessPoolManager.h"
 #import "NSURLRequest+HeaderHelpers.h"
 
 #import "objc/runtime.h"
@@ -61,7 +62,6 @@ static NSString *const MessageHanderName = @"ReactNative";
   return _webkitAvailable;
 }
 
-
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if ((self = [super initWithFrame:frame])) {
@@ -95,6 +95,9 @@ static NSString *const MessageHanderName = @"ReactNative";
     };
 
     WKWebViewConfiguration *wkWebViewConfig = [WKWebViewConfiguration new];
+    if(self.useSharedProcessPool) {
+        wkWebViewConfig.processPool = [[RNCWKProcessPoolManager sharedManager] sharedProcessPool];
+    }
     wkWebViewConfig.userContentController = [WKUserContentController new];
     [wkWebViewConfig.userContentController addScriptMessageHandler: self name: MessageHanderName];
     wkWebViewConfig.allowsInlineMediaPlayback = _allowsInlineMediaPlayback;
