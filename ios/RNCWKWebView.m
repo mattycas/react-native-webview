@@ -383,7 +383,8 @@ static NSString *const MessageHanderName = @"ReactNative";
   }
 
   NSDictionary *customHeaders = [_source valueForKey:@"headers"];
-  BOOL userAction = navigationAction.navigationType != WKNavigationTypeOther;
+  BOOL userAction = navigationAction.navigationType != WKNavigationTypeOther &&
+                    [request.HTTPMethod isEqualToString:@"GET"];
   if (userAction && customHeaders &&
       ![request containsHeaders:customHeaders]) {
     NSMutableURLRequest *newRequest = [request mutableCopy];
