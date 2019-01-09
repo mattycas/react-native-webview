@@ -253,6 +253,12 @@ export type IOSWebViewProps = $ReadOnly<{|
    * @platform ios
    */
   allowsLinkPreview?: ?boolean,
+ /**
+   * Set true if shared cookies from HTTPCookieStorage should used for every load request in the
+   * `RNCWKWebView`. The default value is `false`.
+   * @platform ios
+   */
+  sharedCookiesEnabled?: boolean,
 |}>;
 
 export type AndroidWebViewProps = $ReadOnly<{|
