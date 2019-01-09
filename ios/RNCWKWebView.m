@@ -96,6 +96,29 @@ static NSString *const MessageHanderName = @"ReactNative";
 #else
     wkWebViewConfig.mediaPlaybackRequiresUserAction = _mediaPlaybackRequiresUserAction;
 #endif
+      
+    if(_sharedCookiesEnabled) {
+      NSMutableString *script = [NSMutableString string];
+      // Get the currently set cookie names in javascript
+      [script appendString:@"var cookieNames = document.cookie.split('; ').map(function(cookie) { return cookie.split('=')[0] } );\n"];
+      for(NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
+          // Skip cookies that will break our script
+          if([cookie.value rangeOfString:@"'"].location != NSNotFound) {
+              continue;
+          }
+          NSString *javascriptCookieString = [NSString stringWithFormat:@"%@=%@;domain=%@;path=%@", cookie.name, cookie.value, cookie.domain, cookie.path ? cookie.path : @"/"];
+          // Create a line that appends this cookie to the web view's document's cookies
+          [script appendFormat:@"if (cookieNames.indexOf('%@') == -1) { document.cookie='%@'; };\n", cookie.name, javascriptCookieString];
+      }
+      
+      WKUserContentController *userContentController = _webView.configuration.userContentController;
+      WKUserScript *cookieInScript = [[WKUserScript alloc] initWithSource:script
+                                                            injectionTime:WKUserScriptInjectionTimeAtDocumentStart
+                                                         forMainFrameOnly:NO];
+      [userContentController addUserScript:cookieInScript];
+      // Create a config out of that userContentController and specify it when we create our web view.
+      wkWebViewConfig.userContentController = userContentController;
+    }
 
     _webView = [[WKWebView alloc] initWithFrame:self.bounds configuration: wkWebViewConfig];
     _webView.scrollView.delegate = self;
