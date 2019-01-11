@@ -112,6 +112,9 @@ static NSString *const MessageHanderName = @"ReactNative";
       }
       
       WKUserContentController *userContentController = _webView.configuration.userContentController;
+      if(userContentController == nil) {
+        userContentController = [[WKUserContentController alloc] init];
+      }
       WKUserScript *cookieInScript = [[WKUserScript alloc] initWithSource:script
                                                             injectionTime:WKUserScriptInjectionTimeAtDocumentStart
                                                          forMainFrameOnly:NO];
