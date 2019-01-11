@@ -267,6 +267,7 @@ class WebView extends React.Component<WebViewSharedProps, State> {
         }
         dataDetectorTypes={this.props.dataDetectorTypes}
         useSharedProcessPool={this.props.useSharedProcessPool}
+        sharedCookiesEnabled={this.props.sharedCookiesEnabled}
         allowsLinkPreview={this.props.allowsLinkPreview}
         {...nativeConfig.props}
       />
