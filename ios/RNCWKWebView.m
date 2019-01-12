@@ -86,7 +86,8 @@ static NSString *const MessageHanderName = @"ReactNative";
         wkWebViewConfig.processPool = [[RNCWKProcessPoolManager sharedManager] sharedProcessPool];
     }
     wkWebViewConfig.userContentController = [WKUserContentController new];
-    [wkWebViewConfig.userContentController addScriptMessageHandler: self name: MessageHanderName];
+    [wkWebViewConfig.userContentController addScriptMessageHandler:self
+                                                              name:MessageHanderName];
     wkWebViewConfig.allowsInlineMediaPlayback = _allowsInlineMediaPlayback;
 #if WEBKIT_IOS_10_APIS_AVAILABLE
     wkWebViewConfig.mediaTypesRequiringUserActionForPlayback = _mediaPlaybackRequiresUserAction
@@ -111,16 +112,10 @@ static NSString *const MessageHanderName = @"ReactNative";
           [script appendFormat:@"if (cookieNames.indexOf('%@') == -1) { document.cookie='%@'; };\n", cookie.name, javascriptCookieString];
       }
       
-      WKUserContentController *userContentController = _webView.configuration.userContentController;
-      if(userContentController == nil) {
-        userContentController = [[WKUserContentController alloc] init];
-      }
       WKUserScript *cookieInScript = [[WKUserScript alloc] initWithSource:script
                                                             injectionTime:WKUserScriptInjectionTimeAtDocumentStart
                                                          forMainFrameOnly:NO];
-      [userContentController addUserScript:cookieInScript];
-      // Create a config out of that userContentController and specify it when we create our web view.
-      wkWebViewConfig.userContentController = userContentController;
+      [wkWebViewConfig.userContentController addUserScript:cookieInScript];
     }
 
     _webView = [[WKWebView alloc] initWithFrame:self.bounds configuration: wkWebViewConfig];
